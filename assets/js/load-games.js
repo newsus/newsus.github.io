@@ -56,7 +56,7 @@ function handleScroll() {
 }
 
 async function loadMoreCards() {
-  let gamesData = await fetchJson("games.json");
+  let gamesData = await fetchJson("/data-json/games.json");
   if (!gamesData) return;
 
   console.log("Menambahkan game cards...");
