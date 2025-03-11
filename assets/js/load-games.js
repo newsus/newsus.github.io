@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       let validHashes = await fetchJson("/data-json/validHashes.json");
       if (!validHashes.includes(expectedHash)) {
         setTimeout(() => {
-          window.location.href = "https://ucbg.github.io";
+          window.location.href = "https://newsus.github.io";
         }, 500);
       }
     }
