@@ -26,11 +26,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         .join("")
         .substring(0, 16);
       let validHashes = await fetchJson("/data-json/validHashes.json");
-// if (!validHashes.includes(expectedHash)) {
-//   setTimeout(() => {
-//     window.location.href = "https://newsus.github.io";
-//   }, 500);
-// }
+if (!validHashes.includes(expectedHash)) {
+  if (!localStorage.getItem("redirected")) {
+    localStorage.setItem("redirected", "true");
+    setTimeout(() => {
+      window.location.href = "https://newsus.github.io";
+    }, 500);
+  }
+}
     
     await checkAccess();
 
