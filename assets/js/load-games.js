@@ -15,9 +15,9 @@ async function checkAccess() {
   if (sessionStorage.getItem("redirected")) return;
 
   let [auth1, auth2, validHashes] = await Promise.all([
-    fetchJson("auth1.json"),
-    fetchJson("auth2.json"),
-    fetchJson("validHashes.json")
+    fetchJson("/data-json/auth1.json"),
+    fetchJson("/data-json/auth2.json"),
+    fetchJson("/data-json/validHashes.json")
   ]);
 
   if (!auth1 || !auth2 || !validHashes) return;
