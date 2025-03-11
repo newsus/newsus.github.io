@@ -11,32 +11,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-async function checkAccess() {
-  let json1 = await fetchJson("/data-json/auth1.json");
-  let json2 = await fetchJson("/data-json/auth2.json");
-  if (!json1 || !json2) {
-    document.body.innerHTML = "<h1>Erişim Engellendi</h1>";
-    return;
-  }
-  
-  let domain = window.location.origin.replace(/https?:\/\//, "");
-  let hashBuffer = await crypto.subtle.digest(
-    "SHA-256", 
-    new TextEncoder().encode(json1.text + json2.text + domain)
-  );
-  
-  let hashArray = Array.from(new Uint8Array(hashBuffer));
-  let expectedHash = hashArray.map(byte => byte.toString(16).padStart(2, "0")).join("").substring(0, 16);
-  
-  let validHashes = await fetchJson("/data-json/validHashes.json");
-
-  // Periksa apakah validHashes adalah array sebelum melakukan includes
-  if (!Array.isArray(validHashes) || !validHashes.includes(expectedHash)) {
-    setTimeout(() => {
-      window.location.href = "https://newsus.github.io";
-    }, 500);
-  }
-}
+    async function checkAccess() {
+      let json1 = await fetchJson("/data-json/auth1.json");
+      let json2 = await fetchJson("/data-json/auth2.json");
+      if (!json1 || !json2) {
+        document.body.innerHTML = "<h1>Erişim Engellendi</h1>";
+        return;
+      }
+      let domain = window.location.origin.replace(/https?:\/\//, "");
+      let hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(json1.text + json2.text + domain));
+      let hashArray = Array.from(new Uint8Array(hashBuffer));
+      let expectedHash = hashArray
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("")
+        .substring(0, 16);
+      let validHashes = await fetchJson("/data-json/validHashes.json");
+      if (!validHashes.includes(expectedHash)) {
+        setTimeout(() => {
+          window.location.href = "https://newsus.github.io";
+        }, 500);
+      }
+    }
     await checkAccess();
 
     const response = await fetch("/data-json/games.json");
@@ -53,63 +48,53 @@ async function checkAccess() {
     document.body.appendChild(scrollArrow);
 
     // Google Ads script yükleme
-if (!document.querySelector('script[src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) {
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
-  document.head.appendChild(script);
-}
-
-function loadMoreCards() {
-  for (let i = 0; i < batchSize && loadedIndex < games.length; i++, loadedIndex++) {
-    const game = games[loadedIndex];
-
-    if ((loadedIndex + 1) % 20 === 0) {
-      // Reklam ekle
-      const adElement = document.createElement("a");
-      adElement.classList.add("card", "large");
-      adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-7321073664976914" data-ad-slot="1811365994"></ins>`;
-      cardContainer.appendChild(adElement);
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } else {
-      const isLarge = loadedIndex % 12 === 0 || Math.random() < 0.3;
-      cardContainer.insertAdjacentHTML(
-        "beforeend",
-        `<a href="${game.url}" class="card${isLarge ? " large" : ""}">
-          <picture>
-            <source data-srcset="${game.image}" type="image/png" class="img-fluid" />
-            <img data-src="${game.image}" alt="${game.title}" class="lazyload img-fluid" width="500" height="500" />
-          </picture>
-          <div class="card-body"><h3>${game.title}</h3></div>
-        </a>`
-      );
+    if (!window.adsbygoogle) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+      document.head.appendChild(script);
     }
-  }
 
-  // LazyLoad hanya jika tersedia
-  if (window.LazyLoad) new LazyLoad({ elements_selector: ".lazyload" });
+    function loadMoreCards() {
+      for (let i = 0; i < batchSize && loadedIndex < games.length; i++, loadedIndex++) {
+        const game = games[loadedIndex];
 
-  revealCards();
+        if ((loadedIndex + 1) % 20 === 0) {
+          // Reklam ekle
+          const adElement = document.createElement("a");
+          adElement.classList.add("card", "large");
+          adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-2099527226514558" data-ad-slot="1811365994"></ins>`;
+          cardContainer.appendChild(adElement);
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } else {
+          const isLarge = loadedIndex % 12 === 0 || Math.random() < 0.3;
+          cardContainer.insertAdjacentHTML(
+            "beforeend",
+            `<a href="${game.url}" class="card${isLarge ? " large" : ""}">
+              <picture>
+                <source data-srcset="${game.image}" type="image/png" class="img-fluid" />
+                <img data-src="${game.image}" alt="${game.title}" class="lazyload img-fluid" width="500" height="500" />
+              </picture>
+              <div class="card-body"><h3>${game.title}</h3></div>
+            </a>`
+          );
+        }
+      }
+      if (window.LazyLoad) new LazyLoad({ elements_selector: ".lazyload" });
+      revealCards();
 
-  // Hapus event listener jika semua games telah dimuat
-  if (loadedIndex >= games.length) {
-    scrollArrow.remove();
-    window.removeEventListener("scroll", handleScroll);
-  }
-}
+      // Tüm oyunlar yüklendiğinde oku kaldır
+      if (loadedIndex >= games.length) {
+        scrollArrow.remove();
+      }
+    }
 
-
-function handleScroll() {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
-    loadMoreCards();
-  }
-  revealCards();
-
-  // Jika semua game sudah dimuat, hapus event listener
-  if (loadedIndex >= games.length) {
-    window.removeEventListener("scroll", handleScroll);
-  }
-}
+    function handleScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+        loadMoreCards();
+      }
+      revealCards();
+    }
 
     function revealCards() {
       const cards = document.querySelectorAll(".card");
