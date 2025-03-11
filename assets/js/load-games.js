@@ -35,18 +35,9 @@ if (!validHashes.includes(expectedHash)) {
   }
 }
     
-    await checkAccess();
+ await checkAccess();
 
-const response = await fetch("/data-json/games.json");
-console.log("Response Status:", response.status);
-console.log("Response OK:", response.ok);
-
-const games = await response.json();
-console.log("Games Data:", games);
-
-
-
-      
+    const response = await fetch("/data-json/games.json");
     const games = await response.json();
     const cardContainer = document.querySelector(".card-masonry");
     let loadedIndex = 0;
@@ -101,13 +92,12 @@ console.log("Games Data:", games);
       }
     }
 
-function handleScroll() {
-  if (allCardsLoaded) return; // Tambahkan ini untuk menghentikan pemanggilan jika semua kartu sudah dimuat
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
-    loadMoreCards();
-  }
-  revealCards();
-}
+    function handleScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+        loadMoreCards();
+      }
+      revealCards();
+    }
 
     function revealCards() {
       const cards = document.querySelectorAll(".card");
