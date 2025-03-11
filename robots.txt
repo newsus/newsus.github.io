@@ -1,2 +1,4 @@
-User-agent: *
-Allow: /
+User-Agent: *
+Disallow:
+
+Sitemap: https://newsus.github.io/sitemaps.xml
