@@ -34,7 +34,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     await checkAccess();
 
-    const response = await fetch("/data-json/games.json");
+const response = await fetch("/data-json/games.json");
+console.log("Response Status:", response.status);
+console.log("Response OK:", response.ok);
+
+const games = await response.json();
+console.log("Games Data:", games);
+
+
+
+      
     const games = await response.json();
     const cardContainer = document.querySelector(".card-masonry");
     let loadedIndex = 0;
