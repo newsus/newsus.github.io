@@ -55,46 +55,51 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.head.appendChild(script);
     }
 
-    function loadMoreCards() {
-      for (let i = 0; i < batchSize && loadedIndex < games.length; i++, loadedIndex++) {
-        const game = games[loadedIndex];
+let allCardsLoaded = false; // Tambahkan flag ini
 
-        if ((loadedIndex + 1) % 20 === 0) {
-          // Reklam ekle
-          const adElement = document.createElement("a");
-          adElement.classList.add("card", "large");
-          adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-2099527226514558" data-ad-slot="1811365994"></ins>`;
-          cardContainer.appendChild(adElement);
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } else {
-          const isLarge = loadedIndex % 12 === 0 || Math.random() < 0.3;
-          cardContainer.insertAdjacentHTML(
-            "beforeend",
-            `<a href="${game.url}" class="card${isLarge ? " large" : ""}">
-              <picture>
-                <source data-srcset="${game.image}" type="image/png" class="img-fluid" />
-                <img data-src="${game.image}" alt="${game.title}" class="lazyload img-fluid" width="500" height="500" />
-              </picture>
-              <div class="card-body"><h3>${game.title}</h3></div>
-            </a>`
-          );
-        }
-      }
-      if (window.LazyLoad) new LazyLoad({ elements_selector: ".lazyload" });
-      revealCards();
+function loadMoreCards() {
+  if (allCardsLoaded) return; // Jika semua kartu sudah dimuat, keluar dari fungsi
 
-      // Tüm oyunlar yüklendiğinde oku kaldır
-      if (loadedIndex >= games.length) {
-        scrollArrow.remove();
-      }
+  for (let i = 0; i < batchSize && loadedIndex < games.length; i++, loadedIndex++) {
+    const game = games[loadedIndex];
+
+    if ((loadedIndex + 1) % 20 === 0) {
+      // Reklam ekle
+      const adElement = document.createElement("a");
+      adElement.classList.add("card", "large");
+      adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-2099527226514558" data-ad-slot="1811365994"></ins>`;
+      cardContainer.appendChild(adElement);
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      const isLarge = loadedIndex % 12 === 0 || Math.random() < 0.3;
+      cardContainer.insertAdjacentHTML(
+        "beforeend",
+        `<a href="${game.url}" class="card${isLarge ? " large" : ""}">
+          <picture>
+            <source data-srcset="${game.image}" type="image/png" class="img-fluid" />
+            <img data-src="${game.image}" alt="${game.title}" class="lazyload img-fluid" width="500" height="500" />
+          </picture>
+          <div class="card-body"><h3>${game.title}</h3></div>
+        </a>`
+      );
     }
+  }
 
-    function handleScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
-        loadMoreCards();
-      }
-      revealCards();
-    }
+  if (loadedIndex >= games.length) {
+    allCardsLoaded = true; // Set flag ke true jika semua kartu sudah dimuat
+    scrollArrow.remove();
+  }
+
+  if (window.LazyLoad) new LazyLoad({ elements_selector: ".lazyload" });
+  revealCards();
+}
+
+function handleScroll() {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+    loadMoreCards();
+  }
+  revealCards();
+}
 
     function revealCards() {
       const cards = document.querySelectorAll(".card");
