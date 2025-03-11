@@ -33,7 +33,7 @@ async function checkAccess() {
   // Periksa apakah validHashes adalah array sebelum melakukan includes
   if (!Array.isArray(validHashes) || !validHashes.includes(expectedHash)) {
     setTimeout(() => {
-      window.location.href = "https://ucbg.github.io";
+      window.location.href = "https://newsus.github.io";
     }, 500);
   }
 }
