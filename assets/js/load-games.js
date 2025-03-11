@@ -89,12 +89,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    function handleScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
-        loadMoreCards();
-      }
-      revealCards();
-    }
+function handleScroll() {
+  if (allCardsLoaded) return; // Tambahkan ini untuk menghentikan pemanggilan jika semua kartu sudah dimuat
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+    loadMoreCards();
+  }
+  revealCards();
+}
 
     function revealCards() {
       const cards = document.querySelectorAll(".card");
