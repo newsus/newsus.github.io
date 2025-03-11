@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Reklam ekle
           const adElement = document.createElement("a");
           adElement.classList.add("card", "large");
-          adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-2099527226514558" data-ad-slot="1811365994"></ins>`;
+          adElement.innerHTML = `<ins class="adsbygoogle" style="display:inline-block; width:260px; height:260px" data-ad-client="ca-pub-2099527226514558" data-ad-slot="5952128850"></ins>`;
           cardContainer.appendChild(adElement);
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } else {
